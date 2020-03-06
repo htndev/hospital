@@ -1,22 +1,20 @@
-import Vue, {PluginObject} from 'vue';
-import userEndpoint from '@/api/user';
+import Vue, { PluginObject } from 'vue';
+import user from '@/api/user';
+import { Api } from '@/common/types';
 
-const endpoints = [userEndpoint];
+const endpoints: Api = {
+  user
+};
 
 const Plugin: PluginObject<any> = {
-  install: (Vue: any) => {
-    console.log('installed');
-    console.log(Vue.prototype);
-    console.log(endpoints);
-    Vue.prototype.$api = {
-      hi: 'Hi!'
-    };
+  install: (Vue: Vue | any) => {
+    Vue.prototype.$api = { ...endpoints };
   }
 };
 
 declare module 'vue/types/vue' {
   interface Vue {
-    $api: any;
+    $api: Api;
   }
 }
 

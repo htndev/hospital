@@ -6,8 +6,8 @@ Vue.use(Vuex);
 
 interface HospitalStore {
   state: {
-    user: UserState
-  }
+    user: UserState;
+  };
 }
 
 export default new Vuex.Store({

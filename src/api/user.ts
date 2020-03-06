@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { ApiRequest } from '@/common/types/abstract-classes';
 import { API_URL } from '@/common/constants';
 import { combineUrl } from '@/common/dev';
+import { RequestMethods } from '@/common/request';
 
-class UserEndpoint extends ApiRequest {
-  protected uri = 'api/user';
+export class UserEndpoint extends RequestMethods {
+  protected uri = 'todos/';
 
   protected provider = axios.create({
     baseURL: combineUrl(API_URL, this.uri)

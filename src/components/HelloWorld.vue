@@ -11,8 +11,5 @@ import { Component, Vue } from 'vue-property-decorator';
   name: 'Hi'
 })
 export default class Hello extends Vue {
-  created() {
-    console.log(this.$api);
-  }
 }
 </script>

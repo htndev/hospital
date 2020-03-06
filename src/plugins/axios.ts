@@ -2,8 +2,6 @@ import Vue, { PluginObject } from 'vue';
 import axios, { AxiosRequestConfig } from 'axios';
 import store from '@/store';
 
-// Full config:  https://github.com/axios/axios#request-config
-
 const config: AxiosRequestConfig = {
   // baseURL: process.env.baseURL || process.env.apiUrl || ""
   // timeout: 60 * 1000, // Timeout
@@ -40,6 +38,7 @@ const Plugin: PluginObject<any> = {
     Vue.$axios = _axios;
   }
 };
+
 Plugin.install = Vue => {
   Vue.$axios = _axios;
   window.axios = _axios;
