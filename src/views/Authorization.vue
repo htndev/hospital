@@ -1,5 +1,11 @@
 <template>
-  <router-view/>
+  <div>
+    <v-tabs centered>
+      <v-tab to="/auth/register">Регистрация</v-tab>
+      <v-tab to="/auth/login">Вход</v-tab>
+    </v-tabs>
+    <router-view/>
+  </div>
 </template>
 
 <script lang="ts">

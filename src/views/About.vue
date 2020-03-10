@@ -1,5 +1,7 @@
 <template>
-  <div>About</div>
+  <v-container>
+    <h1>Это просто больница. Больница для курсовой.</h1>
+  </v-container>
 </template>
 
 <script lang="ts">

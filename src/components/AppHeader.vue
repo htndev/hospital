@@ -54,7 +54,6 @@ import { mapGetters } from 'vuex';
   name: 'AppHeader',
   components: { Avatar },
   computed: {
-    // @ts-ignore
     ...mapGetters(['isUserAuthenticated'])
   }
 })

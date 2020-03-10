@@ -1,4 +1,5 @@
 import { GetterTree, MutationTree, ActionTree } from 'vuex';
+import endpoint from '@/api/user';
 
 export class State {
   constructor(
@@ -15,9 +16,17 @@ const getters: GetterTree<State, any> = {
 const mutations: MutationTree<State> = {};
 
 const actions: ActionTree<State, any> = {
-  authorizeUser(context, payload) {
+  async isUserExists(context, {email}) {
+    await endpoint.get('exists', {
+      params: {
+        email
+      }
+    });
+  },
+
+  authorizeUser(context, { email, password }) {
     console.log(context);
-    console.log(payload);
+    console.log({email, password});
     // TODO: Authorization
   },
 
@@ -27,6 +36,7 @@ const actions: ActionTree<State, any> = {
 };
 
 export default {
+  namespaced: true,
   state: () => new State(),
   getters,
   mutations,

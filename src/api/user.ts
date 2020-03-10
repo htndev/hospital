@@ -4,7 +4,7 @@ import { combineUrl } from '@/common/dev';
 import { RequestMethods } from '@/common/request';
 
 export class UserEndpoint extends RequestMethods {
-  protected uri = 'todos/';
+  protected uri = 'user';
 
   protected provider = axios.create({
     baseURL: combineUrl(API_URL, this.uri)
