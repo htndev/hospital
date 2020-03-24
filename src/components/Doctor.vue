@@ -27,29 +27,14 @@
 
 <script lang="ts">
   import { Component, Vue, Prop } from 'vue-property-decorator';
-  import { DEFAULT_DOCTOR_IMAGE } from '@/common/constants';
-
-  export interface DoctorItem {
-    name: string;
-    surname: string;
-    patronymics: string;
-    description: string;
-    specialities: {id: number; title: string}[];
-    image: string;
-  }
+  // import { DEFAULT_DOCTOR_IMAGE } from '@/common/constants';
+  import { DoctorItem } from '@/common/types';
 
   @Component({
     name: 'Doctor'
   })
   export default class Doctor extends Vue {
-    // @Prop({ type: String, default: '' }) name!: string;
-    // @Prop({ type: String, default: '' }) surname!: string;
-    // @Prop({ type: String, default: '' }) patronymics!: string;
-    // @Prop({ type: String, default: '' }) description!: string;
-    // @Prop({ type: String, default: DEFAULT_DOCTOR_IMAGE }) image!: string;
-    // @Prop({ type: Array, default: [] }) specialities!: {id: number; title: string}[];
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    @Prop({type: Object, default: () => {} }) doctor!: DoctorItem;
+    @Prop({ type: Object, default: () => ({}) }) doctor!: DoctorItem;
     get fullName() {
       return `${this.doctor.surname} ${this.doctor.name} ${this.doctor.patronymics}`;
     }

@@ -1,7 +1,15 @@
 export type URL = string;
 
-import { UserEndpoint } from '@/api/user';
+import { AuthEndpoint } from '@/api/auth';
 
 export interface Api {
-  user: UserEndpoint;
+  auth: AuthEndpoint;
+}
+export interface DoctorItem {
+  name: string;
+  surname: string;
+  patronymics: string;
+  description: string;
+  specialities: {id: number; title: string}[];
+  image: string;
 }

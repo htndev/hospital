@@ -17,9 +17,10 @@
 </template>
 
 <script lang="ts">
-  import {Component, Vue} from 'vue-property-decorator';
+  import { Component, Vue } from 'vue-property-decorator';
   // @ts-ignore
-  import Doctor, { DoctorItem } from '@/components/Doctor.vue';
+  import Doctor from '@/components/Doctor.vue';
+  import { DoctorItem } from '@/common/types';
 
   @Component({
     name: 'Doctors',
@@ -32,6 +33,7 @@
         surname: 'Ванильчук',
         patronymics: 'Владимирович',
         description: 'Это врач, и все.',
+        image: 'https://avatars2.githubusercontent.com/u/29665511?s=460&v=4',
         specialities: [
           {
             id: 1,

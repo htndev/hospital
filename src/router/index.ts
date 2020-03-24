@@ -9,14 +9,14 @@ import store from '@/store';
 
 Vue.use(VueRouter);
 
-const routes: RouteConfig[] = [
-  {
+const routes: RouteConfig[] = [ {
     path: '/',
     name: 'Home',
     component: Home,
     meta: {
       requiresAuth: false,
-      adminAccess: false
+      adminAccess: false,
+      requiredAnonymous: false
     }
   },
   {
@@ -26,7 +26,8 @@ const routes: RouteConfig[] = [
     component: () => import(/* webpackChunkName: "about" */ '@/views/About'),
     meta: {
       requiresAuth: false,
-      adminAccess: false
+      adminAccess: false,
+      requiredAnonymous: false
     }
   },
   {
@@ -36,7 +37,8 @@ const routes: RouteConfig[] = [
     component: Authorization,
     meta: {
       requiresAuth: false,
-      adminAccess: false
+      adminAccess: false,
+      requiredAnonymous: true
     },
     children: [
       {
@@ -46,7 +48,8 @@ const routes: RouteConfig[] = [
         component:  () => import(/* webpackChunkName: "login" */ '@/views/Login'),
         meta: {
           requiresAuth: false,
-          adminAccess: false
+          adminAccess: false,
+          requiredAnonymous: true
         }
       },
       {
@@ -56,10 +59,10 @@ const routes: RouteConfig[] = [
         component: () => import(/* webpackChunkName: "register" */ '@/views/Register'),
         meta: {
           requiresAuth: false,
-          adminAccess: false
+          adminAccess: false,
+          requiredAnonymous: true
         }
-      }
-    ]
+      } ]
   },
   {
     path: '/services',
@@ -68,7 +71,8 @@ const routes: RouteConfig[] = [
     component: () => import(/* webpackChunkName: "register" */ '@/views/Services'),
     meta: {
       requiresAuth: false,
-      adminAccess: false
+      adminAccess: false,
+      requiredAnonymous: false
     }
   },
   {
@@ -78,7 +82,8 @@ const routes: RouteConfig[] = [
     component: () => import(/* webpackChunkName: "register" */ '@/views/Doctors'),
     meta: {
       requiresAuth: false,
-      adminAccess: false
+      adminAccess: false,
+      requiredAnonymous: false
     }
   },
   {
@@ -88,7 +93,8 @@ const routes: RouteConfig[] = [
     component: () => import(/* webpackChunkName: "dashboard" */ '@/views/Dashboard'),
     meta: {
       requiresAuth: true,
-      adminAccess: true
+      adminAccess: true,
+      requiredAnonymous: false
     }
   },
   {
@@ -110,9 +116,9 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
+  const isAuthenticated = (store as Store<any>).getters['user/isUserAuthenticated'];
   if(to.meta.requiresAuth) {
-    const isAuthenticated = (store as Store<any>).getters.isUserAuthenticated;
-
+    next();
     if(isAuthenticated) {
       console.log('Authed');
     } else {
@@ -121,8 +127,16 @@ router.beforeEach((to, from, next) => {
     }
   }
   else {
-    next();
+    if(to.meta.requiredAnonymous) {
+      if(isAuthenticated) {
+        return next('/');
+      }
+
+      return next();
+    }
   }
+
+  next();
 });
 
 export default router;

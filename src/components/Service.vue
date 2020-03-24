@@ -83,7 +83,7 @@
   @Component({
     name: 'Service',
     computed: {
-      ...mapGetters(['isUserAuthenticated'])
+      ...mapGetters([ 'isUserAuthenticated' ])
     }
   })
   export default class Service extends Vue {

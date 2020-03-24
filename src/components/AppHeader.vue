@@ -29,8 +29,8 @@
         Записаться
       </v-btn>
       <avatar
-          :name="text"
-          :email="email"
+          :name="fullname"
+          :phone="userInfo.phone"
           v-if="isUserAuthenticated"
       />
     </template>
@@ -46,25 +46,29 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { mdiHospitalBuilding, mdiPencilOutline  } from '@mdi/js';
+import { mdiHospitalBuilding, mdiPencilOutline } from '@mdi/js';
+// @ts-ignore
 import Avatar from './Avatar.vue';
-import { mapGetters } from 'vuex';
 
 @Component({
   name: 'AppHeader',
-  components: { Avatar },
-  computed: {
-    ...mapGetters(['isUserAuthenticated'])
-  }
+  components: { Avatar }
 })
 export default class AppHeader extends Vue {
-  isUserAuthenticated!: boolean;
   logoIcon = mdiHospitalBuilding;
   bookVisitIcon = mdiPencilOutline;
 
-  text = 'Alex Van';
+  get fullname() {
+    return this.$store.getters['user/fullName'];
+  }
 
-  email = 'htn.developer@gmail.com';
+  get userInfo() {
+    return this.$store.state.user.identity;
+  }
+
+  get isUserAuthenticated() {
+    return this.$store.getters['user/isUserAuthenticated'];
+  }
 
   links = [
     {
@@ -80,10 +84,6 @@ export default class AppHeader extends Vue {
       to: '/about'
     }
   ];
-
-  created() {
-    // console.log(this);
-  }
 }
 </script>
 

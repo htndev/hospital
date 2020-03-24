@@ -14,7 +14,7 @@
               <span>{{ letters }}</span>
             </v-avatar>
           </template>
-          <span>{{ email }}</span>
+          <span>{{ phone }}</span>
         </v-tooltip>
       </template>
       <v-list>
@@ -23,13 +23,14 @@
             outlined
             width="100%"
           >
-            Настройки
+            Аккаунт
           </v-btn>
         </v-list-item>
         <v-list-item>
           <v-btn
             width="100%"
             outlined
+            @click="logout"
           >
             Выход
           </v-btn>
@@ -40,14 +41,14 @@
 </template>
 
 <script lang="ts">
-  import {Component, Prop, Vue} from 'vue-property-decorator';
+  import { Component, Prop, Vue } from 'vue-property-decorator';
 
   @Component({
     name: 'Avatar'
   })
   export default class Avatar extends Vue {
     @Prop({ default: '' }) name?: string;
-    @Prop({ default: '' }) email?: string;
+    @Prop({ default: '' }) phone?: string;
 
     get letters() {
       return this.getFirstLetters(this.name?.slice().split(' ') as []);
@@ -55,6 +56,11 @@
 
     getFirstLetters(values: string[]): string {
       return `${values[0][0]}${values[1] ? values[1][0] : ''}`;
+    }
+
+    logout() {
+      this.$store.dispatch('user/logout');
+      this.$router.push('/auth');
     }
   }
 </script>

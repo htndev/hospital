@@ -1,6 +1,5 @@
 import Vue, { PluginObject } from 'vue';
 import axios, { AxiosRequestConfig } from 'axios';
-import store from '@/store';
 
 const config: AxiosRequestConfig = {
   // baseURL: process.env.baseURL || process.env.apiUrl || ""
@@ -12,9 +11,6 @@ const _axios = axios.create(config);
 
 _axios.interceptors.request.use(
   cfg => {
-    cfg.headers = {
-      Authorization: store.state.user.token
-    };
     return cfg;
   },
   err => {

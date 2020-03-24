@@ -16,10 +16,11 @@
           <v-text-field
               v-model="loginText"
               outlined
-              label="Email"
-              :rules="[rules.required, rules.emailOverflow]"
-              :maxlength="maxEmailLength"
-              ref="email"
+              label="Телефон"
+              :rules="[rules.required, rules.isPhone, rules.phoneOverflow]"
+              :maxlength="maxPhoneLength"
+              type="tel"
+              ref="phone"
           />
           <v-text-field
               v-model="passwordText"
@@ -39,10 +40,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { namespace } from 'vuex-class';
-import { MAX_PASSWORD_LENGTH, MAX_EMAIL_LENGTH } from '@/common/constants';
-
-const user = namespace('user');
+import { MAX_PASSWORD_LENGTH, MAX_PHONE_LENGTH, PATTERNS } from '@/common/constants';
 
 @Component({
   name: 'Login'
@@ -51,34 +49,39 @@ export default class Login extends Vue {
   loginText = '';
   passwordText = '';
   errorText = '';
+
   showError = false;
-  @user.Action
-  authorizeUser!: (data: { email: string; password: string }) => string;
-  maxEmailLength = MAX_EMAIL_LENGTH;
+  maxPhoneLength = MAX_PHONE_LENGTH;
   maxPasswordLength = MAX_PASSWORD_LENGTH;
+
   errors = {
-    email: false,
+    phone: false,
     password: false
   };
+
   rules = {
     required: (v: string) => !!v || 'Поле не должно быть пустым.',
-    emailOverflow: (v: string) => v.length <= MAX_EMAIL_LENGTH || `Email должен быть меньше ${MAX_EMAIL_LENGTH} символов.`,
+    isPhone: (v: string) => PATTERNS.ONLY_DIGITS().test(v) || 'Телефон содержит неверные символы. Вводите только цифры.',
+    phoneOverflow: (v: string) => v.length <= MAX_PHONE_LENGTH || `Телефон должен быть меньше ${MAX_PHONE_LENGTH} символов.`,
     passwordOverflow: (v: string) => v.length <= MAX_PASSWORD_LENGTH || `Пароль должен быть меньше ${MAX_PASSWORD_LENGTH} символов.`
   };
 
-  login() {
+  async authorizeUser(data: any): Promise<{statusCode: number; message: string}> {
+    return this.$store.dispatch('user/authorizeUser', data);
+  }
+
+  async login() {
     const isValid = this.validateFields();
 
-    console.log(isValid);
     if(!isValid) {
       this.triggerAllFields();
       this.toggleAlert('Заполните все поля правильными значениями!');
       return;
     }
 
-    console.log(this.loginText);
-    console.log(this.passwordText);
-    console.log(this.authorizeUser({ email: this.loginText, password: this.passwordText }));
+    await this.authorizeUser({ phone: this.loginText, password: this.passwordText })
+              .then(() => this.$router.push('/'))
+              .catch(({ message }) => this.toggleAlert(message));
   }
 
   toggleAlert(text = 'Что-то пошло не так. Извините.') {

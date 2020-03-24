@@ -85,7 +85,7 @@
             image: 'https://www.gostudy.cz/wp-content/themes/gostudy_eighteen/assets/pages/doctors/images/doctor-cut.png'
           }
         ]
-      },
+      }
     ];
     servicesLoading = true;
     searchText = '';
@@ -100,7 +100,7 @@
     }
 
     get matchedServices() {
-      return [...this.services].filter((item: ServiceItem) => new RegExp(this.searchText, 'gi').test(item.title));
+      return [ ...this.services ].filter((item: ServiceItem) => new RegExp(this.searchText, 'gi').test(item.title));
     }
   }
 </script>
