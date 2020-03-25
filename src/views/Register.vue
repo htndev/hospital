@@ -101,14 +101,13 @@
 
 <script lang="ts">
   import { Component, Vue } from 'vue-property-decorator';
-  import { namespace } from 'vuex-class';
   import {
     PATTERNS,
     MAX_NAME_LENGTH,
+    MAX_PHONE_LENGTH,
     MAX_SURNAME_LENGTH,
-    MAX_PATRONYMICS_LENGTH,
     MAX_PASSWORD_LENGTH,
-    MAX_PHONE_LENGTH
+    MAX_PATRONYMICS_LENGTH
   } from '@/common/constants';
 
   @Component({
