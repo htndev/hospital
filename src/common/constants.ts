@@ -8,6 +8,8 @@ export const PATTERNS: {[key: string]: () => RegExp} = {
   ONLY_DIGITS: (): RegExp => /^\d*$/g
 };
 
+export const SHOW_ALERT = 'show:alert';
+
 export const FILES_PATH = `${API_URL}/files`;
 
 export const IMAGES_PATH = `${FILES_PATH}/images`;

@@ -1,5 +1,6 @@
 import { GetterTree, MutationTree, ActionTree } from 'vuex';
 import authEndpoint from '@/api/auth';
+import userEndpoint from '@/api/user';
 
 export const SET_USER = 'SET_USER';
 export const UNSET_USER = 'UNSET_USER';
@@ -10,7 +11,6 @@ interface Identity {
   name?: string;
   surname?: string;
   patronymics?: string;
-  gender?: string;
   phone?: string;
 }
 
@@ -27,12 +27,16 @@ export class State {
 
 const getters: GetterTree<State, any> = {
   isUserAuthenticated: (s: State) => !!s.identity,
-  fullName: s => `${(s as any).identity.surname} ${(s as any).identity.name}${(s as any).identity.patronymics && ` ${(s as any).identity.patronymics}`}`
+  fullName: s => s.identity ? `${(s as any).identity?.surname} ${(s as any).identity?.name}${(s as any).identity?.patronymics && ` ${(s as any).identity?.patronymics}`}` : '',
+  userData: s => {
+    const { _id, ...rest } = s.identity as any;
+    return { ...rest };
+  }
 };
 
 const mutations: MutationTree<State> = {
-  [SET_USER](state, { _id, phone, name, surname, patronymics, gender }) {
-    const user = { _id, name, phone, surname, patronymics, gender };
+  [SET_USER](state, { _id, phone, name, surname, patronymics }) {
+    const user = { _id, name, phone, surname, patronymics };
     state.identity = { ...user };
     localStorage.setItem('USER_INFO', JSON.stringify(user));
   },
@@ -58,9 +62,7 @@ const actions: ActionTree<State, any> = {
         password
       })
       .then(response => response.data)
-      .catch(err => {
-        return err.response?.data;
-      });
+      .catch(err => err.response?.data);
 
     if(received.statusCode >= 400) {
       throw new Error(received.message);
@@ -96,6 +98,25 @@ const actions: ActionTree<State, any> = {
 
   async logout({ commit }) {
     commit(UNSET_USER);
+  },
+
+  async updateCommonInfo({ commit }, { phone, name, surname, patronymics }: {[key: string]: string}) {
+    const received = await userEndpoint.put('', {
+      phone,
+      name,
+      surname,
+      patronymics
+    }).catch(err => err.response?.data);
+    if(received?.response?.status >= 400 && received.status >= 400) {
+      throw new Error(received.response.data.message);
+    }
+    const userInfo = await userEndpoint.get('', {
+      params: {
+        phone
+      }
+    });
+    commit(SET_USER, userInfo.data);
+    return received.data;
   }
 };
 

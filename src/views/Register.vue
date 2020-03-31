@@ -1,15 +1,6 @@
 <template>
   <v-container>
     <h1 class="heading text-center">Регистрация</h1>
-    <v-alert
-        border="left"
-        elevation="2"
-        type="error"
-        v-model="showError"
-        transition="slide-x-reverse-transition"
-    >
-      {{ errorText }}
-    </v-alert>
     <v-row justify="center">
       <v-col cols="6">
         <v-form
@@ -103,12 +94,14 @@
   import { Component, Vue } from 'vue-property-decorator';
   import {
     PATTERNS,
+    SHOW_ALERT,
     MAX_NAME_LENGTH,
     MAX_PHONE_LENGTH,
     MAX_SURNAME_LENGTH,
     MAX_PASSWORD_LENGTH,
     MAX_PATRONYMICS_LENGTH
   } from '@/common/constants';
+  import eventBus from '@/common/eventBus';
 
   @Component({
     name: 'Register'
@@ -156,7 +149,7 @@
       passwordOverflow    : (v: string) => v.length <= MAX_PASSWORD_LENGTH || `Пароль должен быть меньше ${MAX_PASSWORD_LENGTH} символов.`
     };
 
-    async isUserExists({ phone }: {phone: string}) {
+    private async isUserExists({ phone }: {phone: string}) {
       return await this.$api.auth.get('/exists', {
         params:{
           phone
@@ -164,11 +157,13 @@
       });
     }
 
-    async register() {
+    private async register() {
       const isValid = this.validateFields();
 
       if (!isValid) {
-        this.toggleAlert('Заполните все поля правильными значениями!');
+        eventBus.$emit(SHOW_ALERT, 'Заполните все поля правильными значениями!', {
+          type: 'error'
+        });
         this.triggerAllFields();
         return;
       }
@@ -180,14 +175,18 @@
 
       if(this.$_.isPlainObject(exists) && exists.error) {
         this.isFetching = false;
-        this.toggleAlert(exists.error);
+        eventBus.$emit(SHOW_ALERT, exists.error, {
+          type: 'error'
+        });
         return;
       }
 
       if(exists) {
         this.isFetching = false;
         this.errors.phone = true;
-        this.toggleAlert('Пользователь с таким телефоном уже существует.');
+        eventBus.$emit(SHOW_ALERT, 'Пользователь с таким телефоном уже существует.', {
+          type: 'error'
+        });
         setTimeout(() => {
           this.errors.phone = false;
         }, this.TIMEOUT_DELAY);
@@ -201,12 +200,14 @@
         patronymics: this.patronymicsText,
         password: this.passwordText,
         passwordConfirmation: this.passwordConfirmationText
-      }).catch(({ message }) => this.toggleAlert(message));
+      }).catch(({ message }) => eventBus.$emit(SHOW_ALERT, message, {
+        type: 'error'
+      }));
       this.isFetching = false;
       await this.$router.push('/');
     }
 
-    triggerAllFields() {
+    private triggerAllFields() {
       Object.keys(this.$refs).forEach(field => {
         if(!(this.$refs[field]as any).valid) {
           (this.errors as any)[field] = true;
@@ -219,15 +220,7 @@
       }, this.TIMEOUT_DELAY);
     }
 
-    toggleAlert(text = 'Что-то пошло не так. Извините.') {
-      this.showError = true;
-      this.errorText = text;
-      setTimeout(() => {
-        this.showError = false;
-      }, this.TIMEOUT_DELAY);
-    }
-
-    validateFields(): boolean {
+    private validateFields(): boolean {
       return Object.keys(this.$refs).every(field => (this.$refs[field] as any).valid);
     }
   }
@@ -236,9 +229,4 @@
 <style scoped lang="sass">
   .v-input
     width: 100%
-
-  .v-alert
-    position: fixed
-    top: 5rem
-    right: 1rem
 </style>

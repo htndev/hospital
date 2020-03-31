@@ -9,7 +9,8 @@ import store from '@/store';
 
 Vue.use(VueRouter);
 
-const routes: RouteConfig[] = [ {
+const routes: RouteConfig[] = [
+  {
     path: '/',
     name: 'Home',
     component: Home,
@@ -77,7 +78,7 @@ const routes: RouteConfig[] = [ {
   },
   {
     path: '/doctors',
-    name: 'doctors',
+    name: 'Doctors',
     // @ts-ignore
     component: () => import(/* webpackChunkName: "register" */ '@/views/Doctors'),
     meta: {
@@ -94,6 +95,17 @@ const routes: RouteConfig[] = [ {
     meta: {
       requiresAuth: true,
       adminAccess: true,
+      requiredAnonymous: false
+    }
+  },
+  {
+    path: '/settings',
+    name: 'Settings',
+    // @ts-ignore
+    component: () => import(/* webpackChunkName: "settings" */ '@/views/Settings'),
+    meta: {
+      requiresAuth: true,
+      adminAccess: false,
       requiredAnonymous: false
     }
   },

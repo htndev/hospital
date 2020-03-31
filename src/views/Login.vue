@@ -40,7 +40,13 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { MAX_PASSWORD_LENGTH, MAX_PHONE_LENGTH, PATTERNS } from '@/common/constants';
+import {
+  PATTERNS,
+  SHOW_ALERT,
+  MAX_PHONE_LENGTH,
+  MAX_PASSWORD_LENGTH
+} from '@/common/constants';
+import eventBus from '@/common/eventBus';
 
 @Component({
   name: 'Login'
@@ -75,21 +81,18 @@ export default class Login extends Vue {
 
     if(!isValid) {
       this.triggerAllFields();
-      this.toggleAlert('Заполните все поля правильными значениями!');
+      eventBus.$emit('show');
+      eventBus.$emit(SHOW_ALERT, 'Заполните все поля правильными значениями!', {
+        type: 'error'
+      });
       return;
     }
 
     await this.authorizeUser({ phone: this.loginText, password: this.passwordText })
               .then(() => this.$router.push('/'))
-              .catch(({ message }) => this.toggleAlert(message));
-  }
-
-  toggleAlert(text = 'Что-то пошло не так. Извините.') {
-    this.showError = true;
-    this.errorText = text;
-    setTimeout(() => {
-      this.showError = false;
-    }, 3000);
+              .catch(({ message }) => eventBus.$emit(SHOW_ALERT, message, {
+                type: 'error'
+              }));
   }
 
   triggerAllFields() {

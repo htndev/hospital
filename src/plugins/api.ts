@@ -1,9 +1,11 @@
 import Vue, { PluginObject } from 'vue';
 import auth from '@/api/auth';
+import user from '@/api/user';
 import { Api } from '@/common/types';
 
 const endpoints: Api = {
-  auth
+  auth,
+  user
 };
 
 const Plugin: PluginObject<any> = {

@@ -22,6 +22,7 @@
           <v-btn
             outlined
             width="100%"
+            to="/settings"
           >
             Аккаунт
           </v-btn>
