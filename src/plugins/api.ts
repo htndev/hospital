@@ -1,11 +1,15 @@
 import Vue, { PluginObject } from 'vue';
 import auth from '@/api/auth';
 import user from '@/api/user';
+import doctor from '@/api/doctor';
+import specialities from '@/api/specialities';
 import { Api } from '@/common/types';
 
 const endpoints: Api = {
   auth,
-  user
+  user,
+  doctor,
+  specialities
 };
 
 const Plugin: PluginObject<any> = {

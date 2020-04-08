@@ -12,6 +12,7 @@ interface Identity {
   surname?: string;
   patronymics?: string;
   phone?: string;
+  access?: number;
 }
 
 export class State {
@@ -29,14 +30,16 @@ const getters: GetterTree<State, any> = {
   isUserAuthenticated: (s: State) => !!s.identity,
   fullName: s => s.identity ? `${(s as any).identity?.surname} ${(s as any).identity?.name}${(s as any).identity?.patronymics && ` ${(s as any).identity?.patronymics}`}` : '',
   userData: s => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { _id, ...rest } = s.identity as any;
     return { ...rest };
-  }
+  },
+  hasAccess: s => (s.identity as any).access > 0
 };
 
 const mutations: MutationTree<State> = {
-  [SET_USER](state, { _id, phone, name, surname, patronymics }) {
-    const user = { _id, name, phone, surname, patronymics };
+  [SET_USER](state, { _id, phone, name, surname, patronymics, access }) {
+    const user = { _id, name, phone, surname, patronymics, access };
     state.identity = { ...user };
     localStorage.setItem('USER_INFO', JSON.stringify(user));
   },

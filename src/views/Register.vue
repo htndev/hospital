@@ -142,11 +142,11 @@
       isPasswordsMatch(v: string) {
         return v === (this.passwordText as any) || 'Пароли не совпадают.';
       },
-      nameOverflow        : (v: string) => v.length <= MAX_NAME_LENGTH || `Имя должно быть меньше ${MAX_NAME_LENGTH} символов.`,
-      surnameOverflow     : (v: string) => v.length <= MAX_SURNAME_LENGTH || `Фамилия должна быть меньше ${MAX_SURNAME_LENGTH} символов.`,
-      patronymicsOverflow : (v: string) => v.length <= MAX_PATRONYMICS_LENGTH || `Отчество должно быть меньше ${MAX_PATRONYMICS_LENGTH} символов.`,
-      phoneOverflow       : (v: string) => v.length <= MAX_PHONE_LENGTH || `Телефон должен быть меньше ${MAX_PHONE_LENGTH} символов.`,
-      passwordOverflow    : (v: string) => v.length <= MAX_PASSWORD_LENGTH || `Пароль должен быть меньше ${MAX_PASSWORD_LENGTH} символов.`
+      nameOverflow: (v: string) => v.length <= MAX_NAME_LENGTH || `Имя должно быть меньше ${MAX_NAME_LENGTH} символов.`,
+      surnameOverflow: (v: string) => v.length <= MAX_SURNAME_LENGTH || `Фамилия должна быть меньше ${MAX_SURNAME_LENGTH} символов.`,
+      patronymicsOverflow: (v: string) => v.length <= MAX_PATRONYMICS_LENGTH || `Отчество должно быть меньше ${MAX_PATRONYMICS_LENGTH} символов.`,
+      phoneOverflow: (v: string) => v.length <= MAX_PHONE_LENGTH || `Телефон должен быть меньше ${MAX_PHONE_LENGTH} символов.`,
+      passwordOverflow: (v: string) => v.length <= MAX_PASSWORD_LENGTH || `Пароль должен быть меньше ${MAX_PASSWORD_LENGTH} символов.`
     };
 
     private async isUserExists({ phone }: {phone: string}) {

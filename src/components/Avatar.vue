@@ -27,6 +27,15 @@
             Аккаунт
           </v-btn>
         </v-list-item>
+        <v-list-item v-if="hasAccess">
+          <v-btn
+              outlined
+              width="100%"
+              to="/dashboard"
+          >
+            Дэшборд
+          </v-btn>
+        </v-list-item>
         <v-list-item>
           <v-btn
             width="100%"
@@ -62,6 +71,10 @@
     logout() {
       this.$store.dispatch('user/logout');
       this.$router.push('/auth');
+    }
+
+    get hasAccess() {
+      return this.$store.getters['user/hasAccess'];
     }
   }
 </script>

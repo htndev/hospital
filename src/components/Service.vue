@@ -74,7 +74,6 @@
 <script lang="ts">
   import { Component, Vue, Prop } from 'vue-property-decorator';
   import { mapGetters } from 'vuex';
-  import { DEFAULT_DOCTOR_IMAGE } from '@/common/constants';
 
   export interface Doctor {
     name: string;
@@ -89,7 +88,7 @@
   export default class Service extends Vue {
     @Prop({ type: String, default: '' }) serviceTitle?: string;
     @Prop({ type: String, default: '' }) serviceDescription?: string;
-    @Prop({ type: String, default: DEFAULT_DOCTOR_IMAGE }) serviceImage?: string;
+    @Prop({ type: String, default: 'https://image.freepik.com/free-vector/doctor-character-background_1270-84.jpg' }) serviceImage?: string;
     @Prop({ type: Array, default: () => [] }) doctors?: Doctor[];
     isUserAuthenticated!: boolean;
     modalError = false;
