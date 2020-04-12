@@ -12,25 +12,30 @@
           :prepend-inner-icon="searchIcon"
       />
     </v-col>
-    <v-row no-gutters>
       <v-skeleton-loader
           :loading="servicesLoading"
           width="340"
           type="card"
       >
+        <v-row
+            no-gutters
+        >
         <template v-if="matchedServices.length">
-          <service
-              v-for="(service, index) in matchedServices"
-              :key="index"
-              :service-title="service.title"
-              :service-description="service.description"
-              :service-image="service.image"
-              :doctors="service.doctors"
-          />
+          <v-col
+              cols="4"
+              v-for="(service) in matchedServices"
+              :key="service.uid"
+          >
+            <service
+                :service-title="service.title"
+                :service-id="service.uid"
+                :doctors="service.doctors"
+            />
+          </v-col>
         </template>
         <h3 v-else>Увы, услуг по Вашему запросу не найдено</h3>
+        </v-row>
       </v-skeleton-loader>
-    </v-row>
   </div>
 </template>
 
@@ -41,9 +46,8 @@
   import Service, { Doctor } from '@/components/Service.vue';
 
   interface ServiceItem {
+    uid: string;
     title: string;
-    description: string;
-    image: string;
     doctors: Doctor[];
   }
 
@@ -52,47 +56,20 @@
     components: { Service }
   })
   export default class Services extends Vue {
-    services: ServiceItem[] = [
-      {
-        title: 'МРТ',
-        description: 'Описание МРТ',
-        image: 'https://s15.stc.all.kpcdn.net/share/i/12/10983569/inx960x640.jpg',
-        doctors: [
-          {
-            name: 'Имя Фамилия',
-            image: 'https://www.gostudy.cz/wp-content/themes/gostudy_eighteen/assets/pages/doctors/images/doctor-cut.png'
-          }
-        ]
-      },
-      {
-        title: 'ЭКГ',
-        description: 'lorem ipsum dolar',
-        image: 'https://s15.stc.all.kpcdn.net/share/i/12/10983569/inx960x640.jpg',
-        doctors: [
-          {
-            name: 'Имя Фамилия',
-            image: 'https://www.gostudy.cz/wp-content/themes/gostudy_eighteen/assets/pages/doctors/images/doctor-cut.png'
-          }
-        ]
-      },
-      {
-        title: 'ЭРМ',
-        description: 'lorem ipsum dolar',
-        image: 'https://s15.stc.all.kpcdn.net/share/i/12/10983569/inx960x640.jpg',
-        doctors: [
-          {
-            name: 'Имя Фамилия',
-            image: 'https://www.gostudy.cz/wp-content/themes/gostudy_eighteen/assets/pages/doctors/images/doctor-cut.png'
-          }
-        ]
-      }
-    ];
-    servicesLoading = true;
+    services: ServiceItem[] = [];
+    servicesLoading = false;
     searchText = '';
     searchIcon = mdiMagnify;
 
-    created() {
-      setTimeout(() => { this.servicesLoading = false; }, 3000);
+    async created() {
+      this.servicesLoading = true;
+      const specialities = await this.$api.specialities.get('', {
+        params: {
+          doctorsRequired: 'object'
+        }
+      });
+      this.services = [ ...specialities.data ];
+      this.servicesLoading = false;
     }
 
     filteredData(data: any) {

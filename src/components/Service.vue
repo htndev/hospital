@@ -1,8 +1,5 @@
 <template>
-  <v-card
-      class="mr-5 mb-5"
-      max-width="320"
-  >
+  <v-card class="mr-5 mb-5">
     <v-dialog
       v-model="modalError"
       width="400"
@@ -37,7 +34,9 @@
 
     <v-card-title>Доктора</v-card-title>
     <v-card-text>
-      <v-chip-group>
+      <v-chip-group
+        column
+      >
         <v-chip
             outlined
             color="blue"
@@ -45,7 +44,7 @@
             :key="i"
         >
           <v-avatar left>
-            <v-img :src="doctor.image"/>
+            <v-img :src="getImageSrc(doctor.image)"/>
           </v-avatar>
           {{ doctor.name }}
         </v-chip>
@@ -65,27 +64,32 @@
 
 <script lang="ts">
   import { Component, Vue, Prop } from 'vue-property-decorator';
-  import { mapGetters } from 'vuex';
+  import { getImageSrc } from '@/common/dev';
 
   export interface Doctor {
     name: string;
+    surname?: string;
+    patronymics?: string;
     image: string;
   }
   @Component({
-    name: 'Service',
-    computed: {
-      ...mapGetters([ 'isUserAuthenticated' ])
-    }
+    name: 'Service'
   })
   export default class Service extends Vue {
     @Prop({ type: String, default: '' }) serviceTitle?: string;
+    @Prop({ type: String, default: '' }) serviceId?: string;
     @Prop({ type: Array, default: () => [] }) doctors?: Doctor[];
-    isUserAuthenticated!: boolean;
     modalError = false;
     modalTextError = 'Чтобы записаться, сперва зарегиструйтесь.';
 
-    book () {
+    getImageSrc = getImageSrc;
+
+    async book () {
       this.modalError = true;
+    }
+
+    get isUserAuthenticated(): boolean {
+      return this.$store.getters['isUserAuthenticated'];
     }
   }
 </script>

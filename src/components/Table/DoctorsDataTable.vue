@@ -45,7 +45,7 @@
 										<v-avatar
 												size="30"
 										>
-											<img :src="getSrc(editingDoctor.avatar)" alt="Doctor image">
+											<img :src="getImageSrc(editingDoctor.avatar)" alt="Doctor image">
 										</v-avatar>
 									</template>
 								</v-file-input>
@@ -110,20 +110,26 @@
 			<template #item.image="{item}">
 				<div class="doctor-avatar">
 					<v-avatar size="65">
-						<img :src="getSrc(item.image)" alt="Doctor image">
+						<img :src="getImageSrc(item.image)" alt="Doctor image">
 					</v-avatar>
 				</div>
 			</template>
 			<template #item.specialities="{item}">
 				<div class="speciality-wrapper">
-					<v-chip-group v-if="item.specialities.length">
-					<v-chip
-							v-for="spec in item.specialities"
-							:key="spec.uid"
-							color="green"
-							text-color="white"
-					>{{spec.title}}</v-chip>
-				</v-chip-group>
+					<v-chip-group
+							v-if="item.specialities.length"
+							column
+							:show-arrows="false"
+					>
+						<v-chip
+								v-for="spec in item.specialities"
+								:key="spec.uid"
+								color="green"
+								text-color="white"
+						>
+							{{spec.title}}
+						</v-chip>
+					</v-chip-group>
 					<p v-else>Нет специализации</p>
 				</div>
 			</template>
@@ -149,7 +155,8 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { DOCTOR_IMAGES_PATH, DEFAULT_DOCTOR_IMAGE, SHOW_ALERT } from '@/common/constants';
+import { DOCTOR_IMAGES_PATH, SHOW_ALERT } from '@/common/constants';
+import { getImageSrc } from '@/common/dev';
 import eventBus from '@/common/eventBus';
 
 @Component({
@@ -219,6 +226,7 @@ export default class DoctorsDataTable extends Vue {
 		return `${this.deletingDoctor.surname} ${this.deletingDoctor.name} ${this.deletingDoctor.patronymics}`.trim();
 	}
 
+
 	async created() {
 		await this.fetchDoctors();
 
@@ -227,9 +235,7 @@ export default class DoctorsDataTable extends Vue {
 		});
 	}
 
-	getSrc(image: string | null): string {
-		return `${DOCTOR_IMAGES_PATH}/${image ? image : DEFAULT_DOCTOR_IMAGE}`;
-	}
+	getImageSrc = getImageSrc;
 
 	async fetchDoctors() {
 		this.doctorsFetching = true;
@@ -313,10 +319,6 @@ export default class DoctorsDataTable extends Vue {
 <style scoped lang="sass">
 .table-wrapper
 	width: 100%
-
-	&::v-deep .speciality-wrapper .v-slide-group__content
-		flex-wrap: wrap
-		max-width: 400px
 
 	&::v-deep .doctor-avatar
 		padding: 5px 0
