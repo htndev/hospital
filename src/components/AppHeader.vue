@@ -19,15 +19,6 @@
 
     <v-spacer></v-spacer>
     <template v-if="isUserAuthenticated">
-      <v-btn
-          depressed
-          rounded
-          class="mr-3"
-          color="success"
-      >
-        <v-icon left>{{ bookVisitIcon }}</v-icon>
-        Записаться
-      </v-btn>
       <avatar
           :name="fullname"
           :phone="userInfo.phone"

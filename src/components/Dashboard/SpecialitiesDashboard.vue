@@ -21,7 +21,7 @@
 						<v-card-text>
 							<v-row no-gutters>
 								<v-text-field
-										v-model="newSpeciality"
+										v-model.trim="newSpeciality"
 										:error="addError"
 										:persistent-hint="addError"
 										hint="Вы не можете добавить уже существующую специализацию"
@@ -108,6 +108,8 @@ export default class SpecialitiesDashboard extends Vue {
 			await this.$store.dispatch('specialities/fetchSpecialities');
 		})
 			.catch((err) => eventBus.$emit(SHOW_ALERT, err.response?.data?.message));
+
+		this.newSpeciality = '';
 	}
 
 	toggleFocus() {

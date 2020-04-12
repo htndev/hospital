@@ -32,16 +32,18 @@
 							</v-row>
 							<v-row no-gutters>
 								<v-file-input
+										v-model="editingDoctor.newAvatar"
 										ref="avatar"
 										accept="image/*"
 										label="Аватар"
 										dense
 										outlined
 										prepend-icon=""
+										show-size
 								>
 									<template #append-outer>
 										<v-avatar
-											size="30"
+												size="30"
 										>
 											<img :src="getSrc(editingDoctor.avatar)" alt="Doctor image">
 										</v-avatar>
@@ -67,21 +69,54 @@
 					</v-card>
 				</v-form>
 			</v-dialog>
-		<v-data-table
-				no-data-text="Врачи не найдены."
-				:items-per-page="Infinity"
-				hide-default-footer
-				:loading="doctorsFetching"
-				:items="[...doctors]"
-				:headers="headers"
+		<v-dialog
+			v-model="showDeletingDialog"
+			persistent
+			max-width="400px"
 		>
+			<v-form>
+				<v-card>
+					<v-card-title class="headline">Удаление</v-card-title>
+					<v-card-text>Вы действительно хотите удалить <strong>{{getDeletingDoctorFullname}}</strong>?</v-card-text>
+					<v-card-actions>
+						<v-spacer></v-spacer>
+						<v-btn
+								text
+								@click="showDeletingDialog = false"
+						>
+							Закрыть
+						</v-btn>
+						<v-btn
+								text
+								color="red"
+								:loading="deleteButtonLoading"
+								@click="deleteDoctor"
+						>
+							Удалить
+						</v-btn>
+					</v-card-actions>
+				</v-card>
+			</v-form>
+		</v-dialog>
+		<div class="doctor-table">
+			<v-data-table
+					no-data-text="Врачи не найдены."
+					:items-per-page="Infinity"
+					hide-default-footer
+					:loading="doctorsFetching"
+					:items="[...doctors]"
+					:headers="headers"
+			>
 			<template #item.image="{item}">
-				<v-avatar size="35">
-					<img :src="getSrc(item.image)" alt="Doctor image">
-				</v-avatar>
+				<div class="doctor-avatar">
+					<v-avatar size="65">
+						<img :src="getSrc(item.image)" alt="Doctor image">
+					</v-avatar>
+				</div>
 			</template>
 			<template #item.specialities="{item}">
-				<v-chip-group v-if="item.specialities.length">
+				<div class="speciality-wrapper">
+					<v-chip-group v-if="item.specialities.length">
 					<v-chip
 							v-for="spec in item.specialities"
 							:key="spec.uid"
@@ -89,31 +124,33 @@
 							text-color="white"
 					>{{spec.title}}</v-chip>
 				</v-chip-group>
-				<p v-else>Нет специализации</p>
+					<p v-else>Нет специализации</p>
+				</div>
 			</template>
 			<template #item.actions="{item}">
 				<v-icon
-					small
-					class="mr-2"
-					@click="editDoctor(item)"
+						small
+						class="mr-2"
+						@click="editDoctor(item)"
 				>
 					mdi-pencil
 				</v-icon>
 				<v-icon
-					small
-					@click="deleteDoctor(item)"
+						small
+						@click="setDeletingDoctor(item)"
 				>
 					mdi-delete
 				</v-icon>
 			</template>
 		</v-data-table>
+		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { Component, Vue }                                       from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import { DOCTOR_IMAGES_PATH, DEFAULT_DOCTOR_IMAGE, SHOW_ALERT } from '@/common/constants';
-import eventBus                                                 from '@/common/eventBus';
+import eventBus from '@/common/eventBus';
 
 @Component({
 	name: 'DoctorsDataTable'
@@ -121,59 +158,83 @@ import eventBus                                                 from '@/common/e
 export default class DoctorsDataTable extends Vue {
 	doctors = [];
 	specialities = [];
+	showEditingDialog = false;
+
 	editingDoctor = {
 		_id: '',
 		name: '',
 		surname: '',
 		patronymics: '',
 		avatar: null,
-		specialities: []
+		specialities: [],
+		newAvatar: null
 	};
 
-	showEditingDialog = false;
+	showDeletingDialog = false;
+	deleteButtonLoading = false;
+	deletingDoctor = {
+		_id: '',
+		name: '',
+		surname: '',
+		patronymics: '',
+		avatar: null
+	};
+
 	doctorsFetching = false;
 
 	headers = [
 		{
-			text: 'Аватар',
-			value: 'image',
+			text    : 'Аватар',
+			value   : 'image',
 			sortable: false
 		},
 		{
-			text: 'Фамилия',
-			value: 'surname',
+			text    : 'Фамилия',
+			value   : 'surname',
 			sortable: true
 		},
 		{
-			text: 'Имя',
-			value: 'name',
+			text    : 'Имя',
+			value   : 'name',
 			sortable: true
 		},
 		{
-			text: 'Отчетсво',
-			value: 'patronymics',
+			text    : 'Отчетсво',
+			value   : 'patronymics',
 			sortable: true
 		},
 		{
-			text: 'Специальности',
-			value: 'specialities',
+			text    : 'Специальности',
+			value   : 'specialities',
 			sortable: true
 		},
 		{
-			text: 'Действия',
-			value: 'actions',
+			text    : 'Действия',
+			value   : 'actions',
 			sortable: false
 		}
 	];
 
+	get getDeletingDoctorFullname() {
+		return `${this.deletingDoctor.surname} ${this.deletingDoctor.name} ${this.deletingDoctor.patronymics}`.trim();
+	}
+
 	async created() {
-		this.doctorsFetching = true;
-		this.doctors = (await this.$api.doctor.get('') as any).data;
-		this.doctorsFetching = false;
+		await this.fetchDoctors();
+
+		this.$on('sync:doctors', async () => {
+			await this.fetchDoctors();
+		});
 	}
 
 	getSrc(image: string | null): string {
 		return `${DOCTOR_IMAGES_PATH}/${image ? image : DEFAULT_DOCTOR_IMAGE}`;
+	}
+
+	async fetchDoctors() {
+		this.doctorsFetching = true;
+		this.doctors = (await this.$api.doctor.get('') as any).data;
+		this.doctorsFetching = false;
 	}
 
 	async editDoctor(item: any) {
@@ -188,8 +249,24 @@ export default class DoctorsDataTable extends Vue {
 		this.showEditingDialog = true;
 	}
 
-	async deleteDoctor(item: any) {
-		console.log(item);
+	setDeletingDoctor(item: any) {
+		this.deletingDoctor = { ...item };
+		this.showDeletingDialog = true;
+	}
+
+	async deleteDoctor() {
+		this.deleteButtonLoading = true;
+		await this.$api.doctor
+							.delete(`/${this.deletingDoctor._id}`)
+							.then(({ data }: any) => eventBus.$emit(SHOW_ALERT, data.message, {
+								type: 'success'
+							}))
+							.catch(({ response }: any) => eventBus.$emit(SHOW_ALERT, response.data?.message, {
+								type: 'error'
+							}));
+		this.deleteButtonLoading = false;
+		this.showDeletingDialog = false;
+		await this.fetchDoctors();
 	}
 
 	async updateDoctor() {
@@ -198,10 +275,14 @@ export default class DoctorsDataTable extends Vue {
 		fd.append('name', this.editingDoctor.name);
 		fd.append('surname', this.editingDoctor.surname);
 		fd.append('patronymics', this.editingDoctor.patronymics);
-		fd.append('speciality', JSON.stringify(this.editingDoctor.specialities));
-		const avatar = (this.$refs.avatar as any).value;
-		if(avatar) {
-			fd.append('avatar', (this.$refs.avatar as any).value);
+		let speciality: any = [ ...this.editingDoctor.specialities ];
+		if(this.isCastRequired(speciality)) {
+			speciality = speciality.map((speciality: any) => speciality.value) as [];
+		}
+		fd.append('speciality', JSON.stringify(speciality));
+		const avatar = this.editingDoctor.newAvatar;
+		if (avatar) {
+			fd.append('file', (this.$refs.avatar as any).value);
 		}
 
 		await this.$api.doctor
@@ -215,11 +296,16 @@ export default class DoctorsDataTable extends Vue {
 		this.editingDoctor.surname = '';
 		this.editingDoctor.patronymics = '';
 		this.editingDoctor.avatar = null;
+		this.editingDoctor.newAvatar = null;
 		this.editingDoctor.specialities = [];
 
 		this.showEditingDialog = false;
+		await this.fetchDoctors();
+	}
 
-		return;
+	isCastRequired(array: [] = []) {
+		// @ts-ignore
+		return !this.$_.isEmpty(array) && this.$_.isPlainObject(array[0]);
 	}
 }
 </script>
@@ -227,4 +313,11 @@ export default class DoctorsDataTable extends Vue {
 <style scoped lang="sass">
 .table-wrapper
 	width: 100%
+
+	&::v-deep .speciality-wrapper .v-slide-group__content
+		flex-wrap: wrap
+		max-width: 400px
+
+	&::v-deep .doctor-avatar
+		padding: 5px 0
 </style>

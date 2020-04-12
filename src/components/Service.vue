@@ -30,16 +30,8 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-img
-        height="250"
-        :src="serviceImage"
-    ></v-img>
 
     <v-card-title>{{ serviceTitle }}</v-card-title>
-
-    <v-card-text>
-      <div>{{ serviceDescription }}</div>
-    </v-card-text>
 
     <v-divider class="mx-4"></v-divider>
 
@@ -87,8 +79,6 @@
   })
   export default class Service extends Vue {
     @Prop({ type: String, default: '' }) serviceTitle?: string;
-    @Prop({ type: String, default: '' }) serviceDescription?: string;
-    @Prop({ type: String, default: 'https://image.freepik.com/free-vector/doctor-character-background_1270-84.jpg' }) serviceImage?: string;
     @Prop({ type: Array, default: () => [] }) doctors?: Doctor[];
     isUserAuthenticated!: boolean;
     modalError = false;

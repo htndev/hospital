@@ -27,7 +27,7 @@ const actions: ActionTree<State, any> = {
 	async fetchSpecialities({ commit }) {
 		const specs = await specialitiesEndpoint.get('', {
 			params: {
-				doctorsRequired: true
+				doctorsRequired: 'amount'
 			}
 		});
 		commit(SET_SPECIALITIES, specs.data);

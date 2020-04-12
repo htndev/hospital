@@ -21,15 +21,15 @@
 						<v-card-text>
 							<v-row no-gutters>
 								<v-text-field
-										v-model.trim="newDoctor.name"
-										label="Имя"
+										v-model.trim="newDoctor.surname"
+										label="Фамилия"
 										outlined
 								/>
 							</v-row>
 							<v-row no-gutters>
 								<v-text-field
-										v-model.trim="newDoctor.surname"
-										label="Фамилия"
+										v-model.trim="newDoctor.name"
+										label="Имя"
 										outlined
 								/>
 							</v-row>
@@ -42,6 +42,7 @@
 							</v-row>
 							<v-row no-gutters>
 								<v-file-input
+										v-model="newDoctor.avatar"
 										ref="avatar"
 										accept="image/*"
 										label="Аватар"
@@ -71,7 +72,7 @@
 			</v-dialog>
 		</v-row>
 		<v-row>
-			<doctors-data-table/>
+			<doctors-data-table ref="doctorsTable"/>
 		</v-row>
 	</div>
 </template>
@@ -114,9 +115,9 @@ export default class DoctorsBoard extends Vue {
 		fd.append('surname', this.newDoctor.surname);
 		fd.append('patronymics', this.newDoctor.patronymics);
 		fd.append('speciality', JSON.stringify(this.newDoctor.specialities));
-		const avatar = (this.$refs.avatar as any).value;
+		const avatar = this.newDoctor.avatar;
 		if(avatar) {
-			fd.append('avatar', (this.$refs.avatar as any).value);
+			fd.append('file', avatar);
 		}
 
 		await this.$api.doctor
@@ -134,7 +135,7 @@ export default class DoctorsBoard extends Vue {
 
 		this.showAddDialog = false;
 
-		return;
+		(this.$refs.doctorsTable as any).$emit('sync:doctors');
 	}
 }
 </script>

@@ -11,7 +11,7 @@
 						<v-card-text>
 							<v-row no-gutters>
 								<v-text-field
-										v-model="editSpeciality"
+										v-model.trim="editSpeciality"
 										:error="editError"
 										:persistent-hint="editError"
 										hint="Вы не можете изменить уже существующую специализацию"
