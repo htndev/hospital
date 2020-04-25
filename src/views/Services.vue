@@ -13,7 +13,7 @@
           <v-btn
               color="green darken-1"
               text
-              @click="userNotAuthenticated = false"
+              @click="userNotAuthenticatedModal = false"
           >
             Закрыть
           </v-btn>
