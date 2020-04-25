@@ -14,7 +14,7 @@
       <v-col cols="6">
         <v-form lazy-validation @submit.prevent="login" class="d-flex flex-column align-center">
           <v-text-field
-              v-model="loginText"
+              v-model.trim="loginText"
               outlined
               label="Телефон"
               :rules="[rules.required, rules.isPhone, rules.phoneOverflow]"

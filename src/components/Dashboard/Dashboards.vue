@@ -11,6 +11,10 @@
 			</v-tab>
 			<v-tab>
 				<v-icon left>mdi-pen</v-icon>
+				Перезвонить
+			</v-tab>
+			<v-tab>
+				<v-icon left>mdi-phone</v-icon>
 				Записи
 			</v-tab>
 			<v-tab-item>
@@ -18,6 +22,9 @@
 			</v-tab-item>
 			<v-tab-item>
 				<doctors-board/>
+			</v-tab-item>
+			<v-tab-item>
+				<callbacks-data-table/>
 			</v-tab-item>
 			<v-tab-item>
 				<book-board/>
@@ -34,10 +41,12 @@ import DoctorsBoard from '@/components/Dashboard/DoctorsBoard.vue';
 import BookBoard from '@/components/Dashboard/BookBoard.vue';
 // @ts-ignore
 import SpecialitiesDashboard from '@/components/Dashboard/SpecialitiesDashboard.vue';
+// @ts-ignore
+import CallbacksDataTable from '@/components/Table/CallbacksDataTable.vue';
 
 @Component({
 	name: 'Dashboards',
-	components: { BookBoard, DoctorsBoard, SpecialitiesDashboard }
+	components: { BookBoard, DoctorsBoard, SpecialitiesDashboard, CallbacksDataTable }
 })
 export default class extends Vue {
 

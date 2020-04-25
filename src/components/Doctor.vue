@@ -2,7 +2,7 @@
   <v-card>
     <v-img
         height="250"
-        :src="doctor.image"
+        :src="getImageSrc(doctor.image)"
     ></v-img>
     <v-card-title>{{ fullName }}</v-card-title>
     <v-card-text>
@@ -11,7 +11,7 @@
     <v-divider class="mx-4"></v-divider>
     <v-card-title>Специализация</v-card-title>
     <v-card-text>
-      <v-chip-group>
+      <v-chip-group column>
         <v-chip
             outlined
             color="blue"
@@ -27,8 +27,8 @@
 
 <script lang="ts">
   import { Component, Vue, Prop } from 'vue-property-decorator';
-  // import { DEFAULT_DOCTOR_IMAGE } from '@/common/constants';
   import { DoctorItem } from '@/common/types';
+  import { getImageSrc } from '@/common/dev';
 
   @Component({
     name: 'Doctor'
@@ -38,9 +38,12 @@
     get fullName() {
       return `${this.doctor.surname} ${this.doctor.name} ${this.doctor.patronymics}`;
     }
+
+    getImageSrc = getImageSrc;
   }
 </script>
 
-<style scoped>
-
+<style scoped lang="sass">
+  .v-card__title
+    word-break: break-word
 </style>

@@ -131,10 +131,7 @@ router.beforeEach((to, from, next) => {
   const isAuthenticated = (store as Store<any>).getters['user/isUserAuthenticated'];
   if(to.meta.requiresAuth) {
     next();
-    if(isAuthenticated) {
-      console.log('Authed');
-    } else {
-      console.log('Not authed');
+    if(isAuthenticated) {} else {
       next('/');
     }
   }

@@ -29,3 +29,5 @@ export const MAX_PATRONYMICS_LENGTH = 255;
 export const MAX_PHONE_LENGTH = 12;
 
 export const MAX_PASSWORD_LENGTH = 100;
+
+export const SECONDS_IN_DAY = 86400;

@@ -176,7 +176,6 @@ export default class SpecialistsDataTable extends Vue {
 	}
 
 	async deleteItem(item: any) {
-		console.log(item);
 		this.deletingItem = item;
 		this.showDeleteModal = true;
 	}

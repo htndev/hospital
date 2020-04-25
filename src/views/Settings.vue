@@ -7,7 +7,7 @@
       <v-tab-item>
         <v-form class="mt-4" @submit.prevent="onCommonSubmit">
           <v-text-field
-              v-model="phone"
+              v-model.trim="phone"
               label="Телефон"
               outlined
               :rules="[rules.required, rules.isPhone, rules.phoneOverflow]"
@@ -18,7 +18,7 @@
               :loading="isFetching"
           />
           <v-text-field
-              v-model="name"
+              v-model.trim="name"
               label="Имя"
               outlined
               :rules="[rules.required, rules.nameOverflow]"
@@ -29,7 +29,7 @@
               :loading="isFetching"
           />
           <v-text-field
-              v-model="surname"
+              v-model.trim="surname"
               label="Фамилия"
               outlined
               ref="surname"
@@ -40,7 +40,7 @@
               :loading="isFetching"
           />
           <v-text-field
-              v-model="patronymics"
+              v-model.trim="patronymics"
               label="Отчество"
               outlined
               ref="patronymics"

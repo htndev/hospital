@@ -2,15 +2,21 @@
   <div>
     <h1>Врачи</h1>
     <template v-if="doctors.length">
-      <v-col
-        cols="4"
-        v-for="(doctor, i) in doctors"
-        :key="i"
+      <v-row
+          no-gutters
+          justify="center"
       >
-        <doctor
-            :doctor="doctor"
-        />
-      </v-col>
+        <v-col
+            cols="3"
+            v-for="(doctor, i) in doctors"
+            :key="i"
+            class="mr-3 mb-3"
+        >
+          <doctor
+              :doctor="doctor"
+          />
+        </v-col>
+      </v-row>
     </template>
     <h3 v-else>Увы, врачей не найдено.</h3>
   </div>
@@ -27,21 +33,15 @@
     components: { Doctor }
   })
   export default class Doctors extends Vue {
-    doctors: DoctorItem[] = [
-      {
-        name: 'Александр',
-        surname: 'Ванильчук',
-        patronymics: 'Владимирович',
-        description: 'Это врач, и все.',
-        image: 'https://avatars2.githubusercontent.com/u/29665511?s=460&v=4',
-        specialities: [
-          {
-            id: 1,
-            title: 'Офтольмолог'
-          }
-        ]
+    doctors: DoctorItem[] = [];
+
+    async created() {
+      const doctorsRequest = await this.$api.doctor.get('');
+      if(doctorsRequest.status >= 400) {
+        return;
       }
-    ];
+      this.doctors = doctorsRequest.data;
+    }
   }
 </script>
 

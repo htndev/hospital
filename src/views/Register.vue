@@ -9,7 +9,7 @@
             class="d-flex flex-column align-center"
         >
           <v-text-field
-              v-model="nameText"
+              v-model.trim="nameText"
               outlined
               label="Имя"
               :rules="[rules.required, rules.nameOverflow]"
@@ -20,7 +20,7 @@
               :loading="isFetching"
           />
           <v-text-field
-              v-model="surnameText"
+              v-model.trim="surnameText"
               outlined
               label="Фамилия"
               :rules="[rules.required, rules.surnameOverflow]"
@@ -31,7 +31,7 @@
               :loading="isFetching"
           />
           <v-text-field
-              v-model="patronymicsText"
+              v-model.trim="patronymicsText"
               outlined
               label="Отчество"
               ref="patronymics"
@@ -42,7 +42,7 @@
               :loading="isFetching"
           />
           <v-text-field
-              v-model="phoneText"
+              v-model.trim="phoneText"
               outlined
               label="Телефон"
               :rules="[rules.required, rules.isPhone, rules.phoneOverflow]"

@@ -1,34 +1,6 @@
 <template>
   <v-card class="mr-5 mb-5">
-    <v-dialog
-      v-model="modalError"
-      width="400"
-    >
-      <v-card>
-        <v-card-title class="headline">Ошибка</v-card-title>
-        <v-card-text>{{ modalTextError }}</v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-              color="green darken-1"
-              text
-              @click="modalError = false"
-          >
-            Закрыть
-          </v-btn>
-
-          <v-btn
-              color="green darken-1"
-              text
-              to="/auth/register"
-          >
-            Зарегистрироваться
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <v-card-title>{{ serviceTitle }}</v-card-title>
+    <v-card-title>{{ service.title }}</v-card-title>
 
     <v-divider class="mx-4"></v-divider>
 
@@ -40,21 +12,22 @@
         <v-chip
             outlined
             color="blue"
-            v-for="(doctor, i) in doctors"
+            v-for="(doctor, i) in service.doctors"
             :key="i"
         >
           <v-avatar left>
             <v-img :src="getImageSrc(doctor.image)"/>
           </v-avatar>
-          {{ doctor.name }}
+          {{ getInitials(doctor) }}
         </v-chip>
       </v-chip-group>
     </v-card-text>
     <v-card-actions>
+      <v-spacer/>
       <v-btn
           color="deep-purple lighten-2"
           text
-          @click="book"
+          @click="callModal"
       >
         Записаться
       </v-btn>
@@ -64,33 +37,27 @@
 
 <script lang="ts">
   import { Component, Vue, Prop } from 'vue-property-decorator';
-  import { getImageSrc } from '@/common/dev';
+  import { getImageSrc, getInitials } from '@/common/dev';
+  import { DoctorItem } from '@/common/types';
 
-  export interface Doctor {
-    name: string;
-    surname?: string;
-    patronymics?: string;
-    image: string;
+  interface IService {
+    doctors: DoctorItem[];
+    title: string;
+    uid: string;
   }
   @Component({
     name: 'Service'
   })
   export default class Service extends Vue {
-    @Prop({ type: String, default: '' }) serviceTitle?: string;
-    @Prop({ type: String, default: '' }) serviceId?: string;
-    @Prop({ type: Array, default: () => [] }) doctors?: Doctor[];
-    modalError = false;
-    modalTextError = 'Чтобы записаться, сперва зарегиструйтесь.';
+    @Prop({ type: Object, default: () => ({}) }) service?: IService;
 
     getImageSrc = getImageSrc;
+    getInitials = getInitials;
 
-    async book () {
-      this.modalError = true;
+    callModal() {
+      this.$emit('book-modal', this.service);
     }
 
-    get isUserAuthenticated(): boolean {
-      return this.$store.getters['isUserAuthenticated'];
-    }
   }
 </script>
 

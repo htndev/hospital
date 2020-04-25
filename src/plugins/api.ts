@@ -3,13 +3,17 @@ import auth from '@/api/auth';
 import user from '@/api/user';
 import doctor from '@/api/doctor';
 import specialities from '@/api/specialities';
+import callback from '@/api/callback';
+import book from '@/api/book';
 import { Api } from '@/common/types';
 
 const endpoints: Api = {
   auth,
   user,
   doctor,
-  specialities
+  specialities,
+  callback,
+  book
 };
 
 const Plugin: PluginObject<any> = {
