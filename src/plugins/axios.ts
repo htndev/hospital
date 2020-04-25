@@ -1,8 +1,5 @@
 import Vue, { PluginObject } from 'vue';
 import axios, { AxiosRequestConfig } from 'axios';
-import store from '@/store';
-
-// Full config:  https://github.com/axios/axios#request-config
 
 const config: AxiosRequestConfig = {
   // baseURL: process.env.baseURL || process.env.apiUrl || ""
@@ -14,9 +11,6 @@ const _axios = axios.create(config);
 
 _axios.interceptors.request.use(
   cfg => {
-    cfg.headers = {
-      Authorization: store.state.user.token
-    };
     return cfg;
   },
   err => {
@@ -40,6 +34,7 @@ const Plugin: PluginObject<any> = {
     Vue.$axios = _axios;
   }
 };
+
 Plugin.install = Vue => {
   Vue.$axios = _axios;
   window.axios = _axios;

@@ -1,49 +1,64 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary" dark>
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
-    </v-app-bar>
-
+    <v-alert
+        border="left"
+        elevation="2"
+        v-model="showError"
+        transition="slide-x-reverse-transition"
+        :type="alertType"
+    >
+      {{ errorText }}
+    </v-alert>
+    <app-header/>
     <v-content>
-      <router-view />
+      <transition >
+        <v-container>
+          <keep-alive>
+            <router-view></router-view>
+          </keep-alive>
+        </v-container>
+      </transition>
     </v-content>
   </v-app>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+// @ts-ignore
+import AppHeader from '@/components/AppHeader.vue';
+
+import eventBus from '@/common/eventBus';
 
 @Component({
-  name: 'App'
+  name: 'App',
+  components: { AppHeader }
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+  showError = false;
+  errorText = '';
+  TIMEOUT_DELAY = 3000;
+  alertType = 'success';
+
+  created() {
+    eventBus.$on('show:alert', (message: string, props: any) => {
+      this.toggleAlert(message, { ...props });
+    });
+  }
+
+  toggleAlert(text = 'Что-то пошло не так. Извините.', { type }: any) {
+    this.showError = true;
+    this.errorText = text;
+    this.alertType = type;
+    setTimeout(() => {
+      this.showError = false;
+    }, this.TIMEOUT_DELAY);
+  }
+}
 </script>
+<style lang="sass" scoped>
+  .v-alert
+    position: fixed
+    top: 5rem
+    right: 1rem
+    z-index: 1
+</style>

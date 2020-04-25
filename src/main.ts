@@ -1,17 +1,19 @@
 import Vue from 'vue';
-import App from './App.vue';
-import router from './router';
-import {Store} from 'vuex';
-import store from './store';
-import vuetify from './plugins/vuetify';
-import './plugins/axios';
-import './plugins/api';
+import { Store } from 'vuex';
+// @ts-ignore
+import App from '@/App';
+import router from '@/router';
+import store from '@/store';
+import vuetify from '@/plugins/vuetify';
+import '@/plugins/axios';
+import '@/plugins/api';
+import '@/plugins/lodash';
 
 Vue.config.productionTip = false;
 
 new Vue({
   router,
-  store: store as Store<any>,
+  store,
   vuetify,
   render: h => h(App)
 }).$mount('#app');
