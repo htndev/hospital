@@ -31,7 +31,7 @@
               :maxlength="maxPasswordLength"
               ref="password"
           />
-          <v-btn outlined type="submit">Войти</v-btn>
+          <v-btn outlined type="submit" :loading="loginButtonLoading">Войти</v-btn>
         </v-form>
       </v-col>
     </v-row>
@@ -59,6 +59,7 @@ export default class Login extends Vue {
   showError = false;
   maxPhoneLength = MAX_PHONE_LENGTH;
   maxPasswordLength = MAX_PASSWORD_LENGTH;
+  loginButtonLoading = false;
 
   errors = {
     phone: false,
@@ -87,12 +88,13 @@ export default class Login extends Vue {
       });
       return;
     }
-
+    this.loginButtonLoading = true;
     await this.authorizeUser({ phone: this.loginText, password: this.passwordText })
               .then(() => this.$router.push('/'))
               .catch(({ message }) => eventBus.$emit(SHOW_ALERT, message, {
                 type: 'error'
               }));
+    this.loginButtonLoading = false;
   }
 
   triggerAllFields() {
