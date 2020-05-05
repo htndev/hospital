@@ -1,8 +1,9 @@
-export const API_URL = 'https://htn-hospital-backend.herokuapp.com';
+// export const API_URL = 'https://htn-hospital-backend.herokuapp.com';
+export const API_URL = 'http://localhost:3000';
 
 export const DEFAULT_DOCTOR_IMAGE = 'DEFAULT_DOCTOR.jpg';
 
-export const PATTERNS: {[key: string]: () => RegExp} = {
+export const PATTERNS: { [key: string]: () => RegExp } = {
   PASSWORD: (): RegExp => /^[\S.]{6,}$/g,
   PHONE: (): RegExp => /^[0-9]{12}$/g,
   ONLY_DIGITS: (): RegExp => /^\d*$/g,

@@ -5,6 +5,7 @@ import doctor from '@/api/doctor';
 import specialities from '@/api/specialities';
 import callback from '@/api/callback';
 import book from '@/api/book';
+import stats from '@/api/stats';
 import { Api } from '@/common/types';
 
 const endpoints: Api = {
@@ -13,7 +14,8 @@ const endpoints: Api = {
   doctor,
   specialities,
   callback,
-  book
+  book,
+  stats
 };
 
 const Plugin: PluginObject<any> = {

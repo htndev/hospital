@@ -4,9 +4,9 @@ import { DoctorEndpoint } from '@/api/doctor';
 import { SpecialitiesEndpoint } from '@/api/specialities';
 import { CallbackEndpoint } from '@/api/callback';
 import { BookEndpoint } from '@/api/book';
+import { StatsEndpoint } from '@/api/stats';
 
 export type URL = string;
-
 
 export interface Api {
   auth: AuthEndpoint;
@@ -15,6 +15,7 @@ export interface Api {
   specialities: SpecialitiesEndpoint;
   callback: CallbackEndpoint;
   book: BookEndpoint;
+  stats: StatsEndpoint;
 }
 
 export interface DoctorItem {
@@ -22,6 +23,6 @@ export interface DoctorItem {
   surname: string;
   patronymics: string;
   description: string;
-  specialities: {id: number; title: string}[];
+  specialities: { id: number; title: string }[];
   image: string;
 }
